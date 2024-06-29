@@ -14,20 +14,40 @@ export class ViewSalesComponent implements OnInit {
   searchForm: FormGroup;
   noResultsMessage: string = '';
 
+  categories: string[] = [];
+  selectedCategory: string = '';
+  minPrice: number | null = null;
+  maxPrice: number | null = null;
+
   constructor(
     private purchaseService: PurchaseService,
     private fb: FormBuilder
   ) {
     this.searchForm = this.fb.group({
-      query: ['']
+      query: [''],
+      category: [''],
+      minPrice: [''],
+      maxPrice: ['']
     });
   }
 
   ngOnInit(): void {
     this.loadSales();
 
-    this.searchForm.get('query')?.valueChanges.subscribe(query => {
-      this.searchSales(query);
+    this.searchForm.get('query')?.valueChanges.subscribe(() => {
+      this.applyFilters();
+    });
+
+    this.searchForm.get('category')?.valueChanges.subscribe(() => {
+      this.applyFilters();
+    });
+
+    this.searchForm.get('minPrice')?.valueChanges.subscribe(() => {
+      this.applyFilters();
+    });
+
+    this.searchForm.get('maxPrice')?.valueChanges.subscribe(() => {
+      this.applyFilters();
     });
   }
 
@@ -36,28 +56,32 @@ export class ViewSalesComponent implements OnInit {
       next: (data) => {
         this.sales = data;
         this.filteredSales = data;
+        this.extractCategories();
         this.noResultsMessage = data.length === 0 ? 'No se encontraron ventas' : '';
       },
       error: (err) => console.error(err)
     });
   }
 
-  searchSales(query: string): void {
-    if (query) {
-      query = query.toLowerCase();
-      this.filteredSales = this.sales.filter(sale =>
-        sale.productName.toLowerCase().includes(query) ||
-        sale.productType.toLowerCase().includes(query) ||
-        sale.userName.toLowerCase().includes(query) ||
-        sale.purchaseDate.toLowerCase().includes(query) ||
-        sale.productPrice.toString().toLowerCase().includes(query) ||
-        sale.quantity.toString().toLowerCase().includes(query) ||
-        sale.totalPrice.toString().toLowerCase().includes(query)
+  extractCategories(): void {
+    this.categories = [...new Set(this.sales.map(sale => sale.productType))];
+  }
+
+  applyFilters(): void {
+    let query = this.searchForm.get('query')?.value.toLowerCase() || '';
+    let category = this.searchForm.get('category')?.value;
+    let minPrice = this.searchForm.get('minPrice')?.value;
+    let maxPrice = this.searchForm.get('maxPrice')?.value;
+
+    this.filteredSales = this.sales.filter(sale => {
+      return (
+        (!query || sale.productName.toLowerCase().includes(query) || sale.userName.toLowerCase().includes(query)) &&
+        (!category || sale.productType === category) &&
+        (!minPrice || sale.productPrice >= minPrice) &&
+        (!maxPrice || sale.productPrice <= maxPrice)
       );
-      this.noResultsMessage = this.filteredSales.length === 0 ? 'No se encontraron ventas con esos criterios de búsqueda' : '';
-    } else {
-      this.filteredSales = this.sales;
-      this.noResultsMessage = '';
-    }
+    });
+
+    this.noResultsMessage = this.filteredSales.length === 0 ? 'No se encontraron ventas con esos criterios de búsqueda' : '';
   }
 }

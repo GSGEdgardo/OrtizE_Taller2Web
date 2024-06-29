@@ -1,8 +1,16 @@
 <div>
   <h2 class="text-center text-2xl font-bold">Visualizar Ventas</h2>
 
-  <form [formGroup]="searchForm">
+  <form [formGroup]="searchForm" class="flex space-x-4 mb-4">
     <input formControlName="query" placeholder="Buscar ventas..." class="border p-2 rounded">
+
+    <select formControlName="category" class="border p-2 rounded">
+      <option value="">Categoría</option>
+      <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+    </select>
+
+    <input formControlName="minPrice" type="number" placeholder="Precio mínimo" class="border p-2 rounded">
+    <input formControlName="maxPrice" type="number" placeholder="Precio máximo" class="border p-2 rounded">
   </form>
 
   <div *ngIf="noResultsMessage" class="text-red-500 mt-4">{{ noResultsMessage }}</div>
