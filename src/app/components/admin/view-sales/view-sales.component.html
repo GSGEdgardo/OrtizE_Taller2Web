@@ -1,12 +1,13 @@
 <div>
   <h2 class="text-center text-2xl font-bold">Visualizar Ventas</h2>
 
-  <form [formGroup]="searchForm" (ngSubmit)="searchSales()">
+  <form [formGroup]="searchForm">
     <input formControlName="query" placeholder="Buscar ventas..." class="border p-2 rounded">
-    <button type="submit" class="bg-blue-500 text-white p-2 rounded">Buscar</button>
   </form>
 
-  <table class="table-auto w-full mt-4 border-collapse border border-gray-200">
+  <div *ngIf="noResultsMessage" class="text-red-500 mt-4">{{ noResultsMessage }}</div>
+
+  <table class="table-auto w-full mt-4 border-collapse border border-gray-200" *ngIf="sales.length > 0">
     <thead>
       <tr class="bg-gray-200">
         <th class="border border-gray-300 px-4 py-2">ID</th>
@@ -25,9 +26,9 @@
         <td class="border border-gray-300 px-4 py-2">{{ sale.purchaseDate | date:'short' }}</td>
         <td class="border border-gray-300 px-4 py-2">{{ sale.productName }}</td>
         <td class="border border-gray-300 px-4 py-2">{{ sale.productType }}</td>
-        <td class="border border-gray-300 px-4 py-2">{{ sale.productPrice }}</td>
+        <td class="border border-gray-300 px-4 py-2">{{ sale.productPrice | currency }}</td>
         <td class="border border-gray-300 px-4 py-2">{{ sale.quantity }}</td>
-        <td class="border border-gray-300 px-4 py-2">{{ sale.totalPrice }}</td>
+        <td class="border border-gray-300 px-4 py-2">{{ sale.totalPrice | currency }}</td>
         <td class="border border-gray-300 px-4 py-2">{{ sale.userName }}</td>
       </tr>
     </tbody>

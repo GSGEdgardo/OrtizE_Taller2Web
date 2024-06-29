@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { SalesService } from 'src/app/services/sales.service';
+import { PurchaseService } from 'src/app/services/purchase.service';
 import { Purchase } from 'src/app/models/purchase';
 
 @Component({
@@ -11,9 +11,10 @@ import { Purchase } from 'src/app/models/purchase';
 export class ViewSalesComponent implements OnInit {
   sales: Purchase[] = [];
   searchForm: FormGroup;
+  noResultsMessage: string = '';
 
   constructor(
-    private salesService: SalesService,
+    private purchaseService: PurchaseService,
     private fb: FormBuilder
   ) {
     this.searchForm = this.fb.group({
@@ -23,20 +24,29 @@ export class ViewSalesComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadSales();
+
+    this.searchForm.get('query')?.valueChanges.subscribe(query => {
+      this.searchSales(query);
+    });
   }
 
   loadSales(): void {
-    this.salesService.getPurchases().subscribe({
-      next: (data) => this.sales = data,
+    this.purchaseService.getPurchases().subscribe({
+      next: (data) => {
+        this.sales = data;
+        this.noResultsMessage = data.length === 0 ? 'No se encontraron ventas' : '';
+      },
       error: (err) => console.error(err)
     });
   }
 
-  searchSales(): void {
-    const query = this.searchForm.get('query')?.value;
+  searchSales(query: string): void {
     if (query) {
-      this.salesService.searchPurchases(query).subscribe({
-        next: (data) => this.sales = data,
+      this.purchaseService.searchPurchases(query).subscribe({
+        next: (data) => {
+          this.sales = data;
+          this.noResultsMessage = data.length === 0 ? 'No se encontraron ventas con esos criterios de búsqueda' : '';
+        },
         error: (err) => console.error(err)
       });
     } else {
