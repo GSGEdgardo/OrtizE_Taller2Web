@@ -1,0 +1,21 @@
+<div class="max-w-md mx-auto mt-10">
+    <h2 class="text-2xl font-bold mb-4">Editar Perfil</h2>
+    <form [formGroup]="editProfileForm" (ngSubmit)="onSubmit()">
+      <div class="mb-4">
+        <label class="block text-gray-700">Nombre</label>
+        <input formControlName="name" class="border p-2 rounded w-full" type="text" placeholder="Nombre">
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700">Fecha de Nacimiento</label>
+        <input formControlName="birthday" class="border p-2 rounded w-full" type="date">
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700">Género</label>
+        <select formControlName="gender" class="border p-2 rounded w-full">
+          <option *ngFor="let gender of genders" [value]="gender.id">{{ gender.type }}</option>
+        </select>
+      </div>
+      <button type="submit" class="bg-blue-500 text-white p-2 rounded">Guardar Cambios</button>
+    </form>
+  </div>
+  

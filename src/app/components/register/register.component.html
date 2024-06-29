@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-white">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register</title>
+</head>
+<body class="h-full">
+  <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+      <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Register</h2>
+    </div>
+
+    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+      <form [formGroup]="registerForm" (ngSubmit)="register()" autocomplete="off" class="space-y-6" method="POST">
+        <div>
+          <label for="rut" class="block text-sm font-medium leading-6 text-gray-900">Rut</label>
+          <div class="mt-2">
+            <input formControlName="rut" id="rut" name="rut" autocomplete="rut" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+            <div *ngIf="registerForm.controls['rut'].invalid && (registerForm.controls['rut'].dirty || registerForm.controls['rut'].touched)" class="text-red-500 text-sm">
+              <div *ngIf="registerForm.controls['rut'].errors?.['required']">Rut is required.</div>
+              <div *ngIf="registerForm.controls['rut'].errors?.['pattern']">Rut must be a valid format.</div>
+              <div *ngIf="registerForm.controls['rut'].errors?.['backend']">{{ registerForm.controls['rut'].errors?.['backend'] }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Name</label>
+          <div class="mt-2">
+            <input formControlName="name" id="name" name="name" autocomplete="name" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+            <div *ngIf="registerForm.controls['name'].invalid && (registerForm.controls['name'].dirty || registerForm.controls['name'].touched)" class="text-red-500 text-sm">
+              <div *ngIf="registerForm.controls['name'].errors?.['required']">Name is required.</div>
+              <div *ngIf="registerForm.controls['name'].errors?.['minlength']">Name must be at least 8 characters long.</div>
+              <div *ngIf="registerForm.controls['name'].errors?.['maxlength']">Name cannot exceed 255 characters.</div>
+              <div *ngIf="registerForm.controls['name'].errors?.['pattern']">Name can only contain letters.</div>
+              <div *ngIf="registerForm.controls['name'].errors?.['backend']">{{ registerForm.controls['name'].errors?.['backend'] }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label for="birthday" class="block text-sm font-medium leading-6 text-gray-900">Birthdate</label>
+          <div class="mt-2">
+            <input type="date" formControlName="birthday" id="birthday" name="birthday" autocomplete="birthday" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+            <div *ngIf="registerForm.controls['birthday'].invalid && (registerForm.controls['birthday'].dirty || registerForm.controls['birthday'].touched)" class="text-red-500 text-sm">
+              <div *ngIf="registerForm.controls['birthday'].errors?.['required']">Birthdate is required.</div>
+              <div *ngIf="registerForm.controls['birthday'].errors?.['pastDate']">Birthdate must be in the past.</div>
+              <div *ngIf="registerForm.controls['birthday'].errors?.['backend']">{{ registerForm.controls['birthday'].errors?.['backend'] }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email</label>
+          <div class="mt-2">
+            <input formControlName="email" id="email" name="email" type="email" autocomplete="email" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+            <div *ngIf="registerForm.controls['email'].invalid && (registerForm.controls['email'].dirty || registerForm.controls['email'].touched)" class="text-red-500 text-sm">
+              <div *ngIf="registerForm.controls['email'].errors?.['required']">Email is required.</div>
+              <div *ngIf="registerForm.controls['email'].errors?.['email']">Invalid email address.</div>
+              <div *ngIf="registerForm.controls['email'].errors?.['backend']">{{ registerForm.controls['email'].errors?.['backend'] }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label for="gender" class="block text-sm font-medium leading-6 text-gray-900">Gender</label>
+          <div class="mt-2">
+            <select formControlName="gender" id="gender" name="gender" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+              <option value="">Select Gender</option>
+              <option *ngFor="let option of genderOptions" [value]="option.label">{{ option.label }}</option>
+            </select>
+            <div *ngIf="registerForm.controls['gender'].invalid && (registerForm.controls['gender'].dirty || registerForm.controls['gender'].touched)" class="text-red-500 text-sm">
+              <div *ngIf="registerForm.controls['gender'].errors?.['required']">Gender is required.</div>
+              <div *ngIf="registerForm.controls['gender'].errors?.['backend']">{{ registerForm.controls['gender'].errors?.['backend'] }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Password</label>
+          <div class="mt-2">
+            <input formControlName="password" id="password" name="password" type="password" autocomplete="current-password" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+            <div *ngIf="registerForm.controls['password'].invalid && (registerForm.controls['password'].dirty || registerForm.controls['password'].touched)" class="text-red-500 text-sm">
+              <div *ngIf="registerForm.controls['password'].errors?.['required']">Password is required.</div>
+              <div *ngIf="registerForm.controls['password'].errors?.['minlength']">Password must be at least 8 characters long.</div>
+              <div *ngIf="registerForm.controls['password'].errors?.['maxlength']">Password cannot exceed 20 characters.</div>
+              <div *ngIf="registerForm.controls['password'].errors?.['pattern']">Password must be alphanumeric.</div>
+              <div *ngIf="registerForm.controls['password'].errors?.['backend']">{{ registerForm.controls['password'].errors?.['backend'] }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label for="confirmPassword" class="block text-sm font-medium leading-6 text-gray-900">Confirm Password</label>
+          <div class="mt-2">
+            <input formControlName="confirmPassword" id="confirmPassword" name="confirmPassword" type="password" autocomplete="confirmPassword" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+            <div *ngIf="registerForm.controls['confirmPassword'].invalid && (registerForm.controls['confirmPassword'].dirty || registerForm.controls['confirmPassword'].touched)" class="text-red-500 text-sm">
+              <div *ngIf="registerForm.controls['confirmPassword'].errors?.['required']">Confirm Password is required.</div>
+              <div *ngIf="registerForm.controls['confirmPassword'].errors?.['noMatching']">Passwords must match.</div>
+              <div *ngIf="registerForm.controls['confirmPassword'].errors?.['backend']">{{ registerForm.controls['confirmPassword'].errors?.['backend'] }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Submit</button>
+        </div>
+        <div class="mt-4 text-center">
+          <span class="text-sm text-gray-600">¿Ya tienes una cuenta? </span>
+          <a (click)="navigateToLogin()" class="text-sm font-semibold text-indigo-600 hover:text-indigo-500 cursor-pointer">¡Inicia sesión aquí!</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

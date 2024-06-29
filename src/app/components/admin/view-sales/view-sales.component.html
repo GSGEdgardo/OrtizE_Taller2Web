@@ -1,0 +1,35 @@
+<div>
+  <h2 class="text-center text-2xl font-bold">Visualizar Ventas</h2>
+
+  <form [formGroup]="searchForm" (ngSubmit)="searchSales()">
+    <input formControlName="query" placeholder="Buscar ventas..." class="border p-2 rounded">
+    <button type="submit" class="bg-blue-500 text-white p-2 rounded">Buscar</button>
+  </form>
+
+  <table class="table-auto w-full mt-4 border-collapse border border-gray-200">
+    <thead>
+      <tr class="bg-gray-200">
+        <th class="border border-gray-300 px-4 py-2">ID</th>
+        <th class="border border-gray-300 px-4 py-2">Fecha de Compra</th>
+        <th class="border border-gray-300 px-4 py-2">Producto</th>
+        <th class="border border-gray-300 px-4 py-2">Tipo de Producto</th>
+        <th class="border border-gray-300 px-4 py-2">Precio</th>
+        <th class="border border-gray-300 px-4 py-2">Cantidad</th>
+        <th class="border border-gray-300 px-4 py-2">Total</th>
+        <th class="border border-gray-300 px-4 py-2">Usuario</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let sale of sales" class="hover:bg-gray-100">
+        <td class="border border-gray-300 px-4 py-2">{{ sale.id }}</td>
+        <td class="border border-gray-300 px-4 py-2">{{ sale.purchaseDate | date:'short' }}</td>
+        <td class="border border-gray-300 px-4 py-2">{{ sale.productName }}</td>
+        <td class="border border-gray-300 px-4 py-2">{{ sale.productType }}</td>
+        <td class="border border-gray-300 px-4 py-2">{{ sale.productPrice }}</td>
+        <td class="border border-gray-300 px-4 py-2">{{ sale.quantity }}</td>
+        <td class="border border-gray-300 px-4 py-2">{{ sale.totalPrice }}</td>
+        <td class="border border-gray-300 px-4 py-2">{{ sale.userName }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,143 @@
+<!-- Main Container for Product Management -->
+<div class="manage-products p-4">
+  <h2 class="text-2xl font-bold mb-4 text-center">Gestión de productos</h2>
+  <div class="flex flex-col sm:flex-row justify-between items-center mb-4">
+    <input type="text" [(ngModel)]="searchQuery" placeholder="Barra de búsqueda" (input)="searchProducts($event)"
+      class="border rounded p-2 flex-grow mb-2 sm:mb-0 sm:mr-2 w-full sm:w-auto" />
+    <button (click)="openAddProductModal()" class="bg-blue-500 text-white px-4 py-2 rounded w-full sm:w-auto">
+      +
+    </button>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="min-w-full bg-white">
+      <thead>
+        <tr>
+          <th class="py-2 px-4 border-b">Nombre</th>
+          <th class="py-2 px-4 border-b">Precio</th>
+          <th class="py-2 px-4 border-b">Stock</th>
+          <th class="py-2 px-4 border-b">Tipo</th>
+          <th class="py-2 px-4 border-b">Imagen</th>
+          <th class="py-2 px-4 border-b">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of products">
+          <td class="py-2 px-4 border-b">{{ product.name }}</td>
+          <td class="py-2 px-4 border-b">{{ product.price | currency }}</td>
+          <td class="py-2 px-4 border-b">{{ product.stock }}</td>
+          <td class="py-2 px-4 border-b">{{ product.productType.type }}</td>
+          <td class="py-2 px-4 border-b">
+            <img [src]="product.imgUrl" alt="{{ product.name }}" class="w-16 h-16 object-cover" />
+          </td>
+          <td class="py-2 px-4 border-b">
+            <button (click)="openEditProductModal(product)" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">
+              ✏️
+            </button>
+            <button (click)="openConfirmDeleteModal(product.id)" class="bg-red-500 text-white px-4 py-2 rounded">
+              🗑️
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Confirm Delete Modal -->
+  <div *ngIf="confirmDeleteModalVisible" class="modal-backdrop">
+    <div class="modal-content">
+      <h2>¿Está seguro que desea eliminar este producto?</h2>
+      <div class="modal-buttons">
+        <button (click)="confirmDelete()" class="bg-red-500 text-white px-4 py-2 rounded">Sí</button>
+        <button (click)="closeConfirmDeleteModal()" class="bg-gray-500 text-white px-4 py-2 rounded">No</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Product Modal -->
+  <div *ngIf="addProductModalVisible" class="modal-backdrop">
+    <div class="modal-content">
+      <h2 class="text-2xl font-bold mb-4">Agregar Producto</h2>
+      <form #productForm="ngForm" (ngSubmit)="addProduct()">
+        <div class="mb-4">
+          <label for="name" class="block text-sm font-medium text-gray-700">Nombre:</label>
+          <input type="text" id="name" name="name" [(ngModel)]="newProduct.name" required minlength="10" maxlength="64" class="mt-1 block w-full p-2 border border-gray-300 rounded">
+          <div *ngIf="fieldErrors.name" class="text-red-500 text-sm">{{ fieldErrors.name }}</div>
+        </div>
+        <div class="mb-4">
+          <label for="price" class="block text-sm font-medium text-gray-700">Precio:</label>
+          <input type="number" id="price" name="price" [(ngModel)]="newProduct.price" required class="mt-1 block w-full p-2 border border-gray-300 rounded">
+          <div *ngIf="fieldErrors.price" class="text-red-500 text-sm">{{ fieldErrors.price }}</div>
+        </div>
+        <div class="mb-4">
+          <label for="stock" class="block text-sm font-medium text-gray-700">Stock:</label>
+          <input type="number" id="stock" name="stock" [(ngModel)]="newProduct.stock" required class="mt-1 block w-full p-2 border border-gray-300 rounded">
+          <div *ngIf="fieldErrors.stock" class="text-red-500 text-sm">{{ fieldErrors.stock }}</div>
+        </div>
+        <div class="mb-4">
+          <label for="productTypeId" class="block text-sm font-medium text-gray-700">Tipo de Producto:</label>
+          <select id="productTypeId" name="productTypeId" [(ngModel)]="newProduct.productTypeId" required class="mt-1 block w-full p-2 border border-gray-300 rounded">
+            <option value="" disabled>Seleccione un tipo</option>
+            <option *ngFor="let type of productTypes" [value]="type.id">{{ type.type }}</option>
+          </select>
+          <div *ngIf="fieldErrors.productTypeId" class="text-red-500 text-sm">{{ fieldErrors.productTypeId }}</div>
+        </div>
+        <div class="mb-4">
+          <label for="image" class="block text-sm font-medium text-gray-700">Imagen:</label>
+          <input type="file" id="image" (change)="onFileSelected($event)" required class="mt-1 block w-full p-2 border border-gray-300 rounded">
+          <div *ngIf="fieldErrors.image" class="text-red-500 text-sm">{{ fieldErrors.image }}</div>
+        </div>
+        <div *ngIf="errorMessage" class="mb-4 text-red-500">
+          {{ errorMessage }}
+        </div>
+        <div class="flex justify-end">
+          <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Agregar</button>
+          <button type="button" (click)="closeAddProductModal()" class="bg-gray-500 text-white px-4 py-2 rounded">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Edit Product Modal -->
+  <div *ngIf="editProductModalVisible" class="modal-backdrop">
+    <div class="modal-content">
+      <h2 class="text-2xl font-bold mb-4">Editar Producto</h2>
+      <form #editProductForm="ngForm" (ngSubmit)="updateProduct()">
+        <div class="mb-4">
+          <label for="editName" class="block text-sm font-medium text-gray-700">Nombre:</label>
+          <input type="text" id="editName" name="name" [(ngModel)]="currentProduct.name" required minlength="10" maxlength="64" class="mt-1 block w-full p-2 border border-gray-300 rounded">
+          <div *ngIf="fieldErrors.name" class="text-red-500 text-sm">{{ fieldErrors.name }}</div>
+        </div>
+        <div class="mb-4">
+          <label for="editPrice" class="block text-sm font-medium text-gray-700">Precio:</label>
+          <input type="number" id="editPrice" name="price" [(ngModel)]="currentProduct.price" required class="mt-1 block w-full p-2 border border-gray-300 rounded">
+          <div *ngIf="fieldErrors.price" class="text-red-500 text-sm">{{ fieldErrors.price }}</div>
+        </div>
+        <div class="mb-4">
+          <label for="editStock" class="block text-sm font-medium text-gray-700">Stock:</label>
+          <input type="number" id="editStock" name="stock" [(ngModel)]="currentProduct.stock" required class="mt-1 block w-full p-2 border border-gray-300 rounded">
+          <div *ngIf="fieldErrors.stock" class="text-red-500 text-sm">{{ fieldErrors.stock }}</div>
+        </div>
+        <div class="mb-4">
+          <label for="editProductTypeId" class="block text-sm font-medium text-gray-700">Tipo de Producto:</label>
+          <select id="editProductTypeId" name="productTypeId" [(ngModel)]="currentProduct.productTypeId" required class="mt-1 block w-full p-2 border border-gray-300 rounded">
+            <option value="" disabled>Seleccione un tipo</option>
+            <option *ngFor="let type of productTypes" [value]="type.id">{{ type.type }}</option>
+          </select>
+          <div *ngIf="fieldErrors.productTypeId" class="text-red-500 text-sm">{{ fieldErrors.productTypeId }}</div>
+        </div>
+        <div class="mb-4">
+          <label for="editImage" class="block text-sm font-medium text-gray-700">Imagen:</label>
+          <input type="file" id="editImage" (change)="onFileSelected($event, true)" class="mt-1 block w-full p-2 border border-gray-300 rounded">
+          <div *ngIf="fieldErrors.image" class="text-red-500 text-sm">{{ fieldErrors.image }}</div>
+        </div>
+        <div *ngIf="errorMessage" class="mb-4 text-red-500">
+          {{ errorMessage }}
+        </div>
+        <div class="flex justify-end">
+          <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Actualizar</button>
+          <button type="button" (click)="closeEditProductModal()" class="bg-gray-500 text-white px-4 py-2 rounded">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
