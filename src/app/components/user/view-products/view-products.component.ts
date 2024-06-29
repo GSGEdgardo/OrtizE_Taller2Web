@@ -55,13 +55,14 @@ export class ViewProductsComponent implements OnInit {
   }
 
   searchProducts(query: string): void {
-    const lowerCaseQuery = query.toLowerCase();
     if (query) {
-      this.filteredProducts = this.products.filter(product =>
-        product.name.toLowerCase().includes(lowerCaseQuery) ||
-        product.productType.type.toLowerCase().includes(lowerCaseQuery)
-      );
-      this.noResultsMessage = this.filteredProducts.length === 0 ? 'No se encontraron productos con esos criterios de búsqueda' : '';
+      this.productService.searchAvailableProducts(query, 1, 10).subscribe({
+        next: (data) => {
+          this.filteredProducts = data;
+          this.noResultsMessage = data.length === 0 ? 'No se encontraron productos con esos criterios de búsqueda' : '';
+        },
+        error: (err) => console.error(err)
+      });
     } else {
       this.filteredProducts = this.products;
       this.noResultsMessage = '';
