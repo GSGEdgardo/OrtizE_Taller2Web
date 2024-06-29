@@ -1,12 +1,21 @@
 <div>
-  <h2 class="text-center text-2xl font-bold">Visualizar Ventas</h2>
+  <h2 class="text-center text-2xl font-bold mb-4">Visualizar Ventas</h2>
 
-  <form [formGroup]="searchForm" (ngSubmit)="searchSales()">
-    <input formControlName="query" placeholder="Buscar ventas..." class="border p-2 rounded">
-    <button type="submit" class="bg-blue-500 text-white p-2 rounded">Buscar</button>
+  <form [formGroup]="searchForm" class="flex flex-col md:flex-row md:space-x-4 mb-4 space-y-2 md:space-y-0">
+    <input formControlName="query" placeholder="Buscar ventas..." class="border p-2 rounded flex-1">
+    
+    <select formControlName="category" class="border p-2 rounded flex-1">
+      <option value="">Categoría</option>
+      <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+    </select>
+    
+    <input formControlName="minPrice" type="number" placeholder="Precio mínimo" class="border p-2 rounded flex-1">
+    <input formControlName="maxPrice" type="number" placeholder="Precio máximo" class="border p-2 rounded flex-1">
   </form>
 
-  <table class="table-auto w-full mt-4 border-collapse border border-gray-200">
+  <div *ngIf="noResultsMessage" class="text-red-500 mt-4">{{ noResultsMessage }}</div>
+
+  <table class="table-auto w-full mt-4 border-collapse border border-gray-200" *ngIf="filteredSales.length > 0">
     <thead>
       <tr class="bg-gray-200">
         <th class="border border-gray-300 px-4 py-2">ID</th>
@@ -20,14 +29,14 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let sale of sales" class="hover:bg-gray-100">
+      <tr *ngFor="let sale of filteredSales" class="hover:bg-gray-100">
         <td class="border border-gray-300 px-4 py-2">{{ sale.id }}</td>
         <td class="border border-gray-300 px-4 py-2">{{ sale.purchaseDate | date:'short' }}</td>
         <td class="border border-gray-300 px-4 py-2">{{ sale.productName }}</td>
         <td class="border border-gray-300 px-4 py-2">{{ sale.productType }}</td>
-        <td class="border border-gray-300 px-4 py-2">{{ sale.productPrice }}</td>
+        <td class="border border-gray-300 px-4 py-2">{{ sale.productPrice | currency }}</td>
         <td class="border border-gray-300 px-4 py-2">{{ sale.quantity }}</td>
-        <td class="border border-gray-300 px-4 py-2">{{ sale.totalPrice }}</td>
+        <td class="border border-gray-300 px-4 py-2">{{ sale.totalPrice | currency }}</td>
         <td class="border border-gray-300 px-4 py-2">{{ sale.userName }}</td>
       </tr>
     </tbody>

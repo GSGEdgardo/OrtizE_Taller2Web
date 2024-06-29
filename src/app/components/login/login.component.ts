@@ -11,6 +11,7 @@ import { AccountService } from 'src/app/services/account.service';
 export class LoginComponent implements OnInit {
 
   loginForm: FormGroup = new FormGroup({});
+  errorMessage: string = '';
 
   constructor(
     private accountService: AccountService,
@@ -24,12 +25,13 @@ export class LoginComponent implements OnInit {
 
   initializeForm(): void {
     this.loginForm = this.fb.group({
-      email: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
   }
 
   login(): void {
+    this.errorMessage = '';
     if (this.loginForm.valid) {
       this.accountService.login(this.loginForm.value).subscribe({
         next: () => {
@@ -41,9 +43,12 @@ export class LoginComponent implements OnInit {
           }
         },
         error: error => {
+          this.errorMessage = 'Las credenciales ingresadas no se encuentran en el sistema';
           console.error("Fallido", error);
         }
       });
+    } else {
+      this.errorMessage = 'Por favor, complete todos los campos.';
     }
   }
 }

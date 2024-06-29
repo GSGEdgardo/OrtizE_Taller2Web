@@ -17,7 +17,9 @@ const routes: Routes = [
     loadChildren: () => import('./components/user/user.module').then(m => m.UserModule),
     canActivate: [authGuardFn]
   },
-  { path: '**', redirectTo: '' } // Redirige las rutas no encontradas al LoginComponent
+  { path: 'edit-profile', loadChildren: () => import('./components/admin/admin.module').then(m => m.AdminModule), canActivate: [authGuardFn] },
+  { path: 'change-password', loadChildren: () => import('./components/admin/admin.module').then(m => m.AdminModule), canActivate: [authGuardFn] },
+  { path: '**', redirectTo: '' }
 ];
 
 @NgModule({
