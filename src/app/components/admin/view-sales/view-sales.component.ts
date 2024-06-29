@@ -10,6 +10,7 @@ import { Purchase } from 'src/app/models/purchase';
 })
 export class ViewSalesComponent implements OnInit {
   sales: Purchase[] = [];
+  filteredSales: Purchase[] = [];
   searchForm: FormGroup;
   noResultsMessage: string = '';
 
@@ -34,6 +35,7 @@ export class ViewSalesComponent implements OnInit {
     this.purchaseService.getPurchases().subscribe({
       next: (data) => {
         this.sales = data;
+        this.filteredSales = data;
         this.noResultsMessage = data.length === 0 ? 'No se encontraron ventas' : '';
       },
       error: (err) => console.error(err)
@@ -42,15 +44,20 @@ export class ViewSalesComponent implements OnInit {
 
   searchSales(query: string): void {
     if (query) {
-      this.purchaseService.searchPurchases(query).subscribe({
-        next: (data) => {
-          this.sales = data;
-          this.noResultsMessage = data.length === 0 ? 'No se encontraron ventas con esos criterios de búsqueda' : '';
-        },
-        error: (err) => console.error(err)
-      });
+      query = query.toLowerCase();
+      this.filteredSales = this.sales.filter(sale =>
+        sale.productName.toLowerCase().includes(query) ||
+        sale.productType.toLowerCase().includes(query) ||
+        sale.userName.toLowerCase().includes(query) ||
+        sale.purchaseDate.toLowerCase().includes(query) ||
+        sale.productPrice.toString().toLowerCase().includes(query) ||
+        sale.quantity.toString().toLowerCase().includes(query) ||
+        sale.totalPrice.toString().toLowerCase().includes(query)
+      );
+      this.noResultsMessage = this.filteredSales.length === 0 ? 'No se encontraron ventas con esos criterios de búsqueda' : '';
     } else {
-      this.loadSales();
+      this.filteredSales = this.sales;
+      this.noResultsMessage = '';
     }
   }
 }

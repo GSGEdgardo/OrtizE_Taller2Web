@@ -7,7 +7,7 @@
 
   <div *ngIf="noResultsMessage" class="text-red-500 mt-4">{{ noResultsMessage }}</div>
 
-  <table class="table-auto w-full mt-4 border-collapse border border-gray-200" *ngIf="sales.length > 0">
+  <table class="table-auto w-full mt-4 border-collapse border border-gray-200" *ngIf="filteredSales.length > 0">
     <thead>
       <tr class="bg-gray-200">
         <th class="border border-gray-300 px-4 py-2">ID</th>
@@ -21,7 +21,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let sale of sales" class="hover:bg-gray-100">
+      <tr *ngFor="let sale of filteredSales" class="hover:bg-gray-100">
         <td class="border border-gray-300 px-4 py-2">{{ sale.id }}</td>
         <td class="border border-gray-300 px-4 py-2">{{ sale.purchaseDate | date:'short' }}</td>
         <td class="border border-gray-300 px-4 py-2">{{ sale.productName }}</td>

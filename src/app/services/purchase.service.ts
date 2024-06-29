@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Purchase } from '../models/purchase';
 
@@ -21,12 +21,29 @@ export class PurchaseService {
 
   getPurchases(): Observable<Purchase[]> {
     return this.http.get<Purchase[]>(`${this.baseUrl}user/purchases`).pipe(
+      map(data => data.map(purchase => this.mapPurchase(purchase))),
       catchError(this.handleError)
     );
   }
 
+  private mapPurchase(purchase: any): Purchase {
+    return {
+      id: purchase.id,
+      purchaseDate: purchase.purchase_Date,
+      productId: purchase.productId,
+      productName: purchase.productName,
+      productType: purchase.productType,
+      productPrice: purchase.productPrice,
+      quantity: purchase.quantity,
+      totalPrice: purchase.totalPrice,
+      userId: purchase.user.id,
+      userName: purchase.user.name
+    };
+  }
+
   searchPurchases(query: string): Observable<Purchase[]> {
     return this.http.get<Purchase[]>(`${this.baseUrl}user/purchases/search`, { params: { query } }).pipe(
+      map(data => data.map(purchase => this.mapPurchase(purchase))),
       catchError(this.handleError)
     );
   }
