@@ -26,6 +26,9 @@ export const authGuardFn: (
     if (account.roleId === 2 && state.url.startsWith('/user')) {
       return true;
     }
+    if (state.url.includes('/edit-profile') || state.url.includes('/change-password')) {
+      return true;
+    }
   }
 
   return router.createUrlTree(['/login']);

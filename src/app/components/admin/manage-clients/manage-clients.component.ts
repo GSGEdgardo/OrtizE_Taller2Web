@@ -4,6 +4,7 @@ import { ClientService } from 'src/app/services/client.service';
 import { AccountService } from 'src/app/services/account.service';
 import { Client } from 'src/app/models/client';
 import { Account } from 'src/app/models/account';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-manage-clients',
@@ -19,6 +20,7 @@ export class ManageClientsComponent implements OnInit {
   confirmMessage: string = '';
   actionText: string = '';
   showConfirmModal: boolean = false;
+  noResultsMessage: string = '';
 
   constructor(
     private clientService: ClientService,
@@ -33,6 +35,12 @@ export class ManageClientsComponent implements OnInit {
   ngOnInit(): void {
     this.loadClients();
     this.getCurrentAccount();
+
+    this.searchForm.get('query')?.valueChanges.pipe(
+      debounceTime(300) // Añadir un tiempo de espera para evitar llamadas excesivas
+    ).subscribe(query => {
+      this.searchClients(query);
+    });
   }
 
   loadClients(): void {
@@ -51,11 +59,25 @@ export class ManageClientsComponent implements OnInit {
     });
   }
 
-  searchClients(): void {
-    const query = this.searchForm.get('query')?.value.toLowerCase();
-    this.filteredClients = this.clients.filter(client =>
-      client.name.toLowerCase().includes(query)
-    );
+  searchClients(query: string): void {
+    query = query.toLowerCase();
+    if (query) {
+      this.filteredClients = this.clients.filter(client =>
+        client.name.toLowerCase().includes(query) ||
+        client.rut.toLowerCase().includes(query) ||
+        client.birthday.toString().toLowerCase().includes(query) ||
+        client.email.toLowerCase().includes(query) ||
+        client.gender.type.toLowerCase().includes(query)
+      );
+      if (this.filteredClients.length === 0) {
+        this.noResultsMessage = 'No se encuentra un cliente con ese nombre';
+      } else {
+        this.noResultsMessage = '';
+      }
+    } else {
+      this.filteredClients = this.clients;
+      this.noResultsMessage = '';
+    }
   }
 
   openConfirmModal(client: Client): void {

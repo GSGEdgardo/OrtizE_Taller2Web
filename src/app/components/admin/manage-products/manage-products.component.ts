@@ -31,6 +31,7 @@ export class ManageProductsComponent implements OnInit {
     productTypeId: '',
     image: null
   };
+  originalProduct: any = null;
   errorMessage: string = '';
   fieldErrors: any = {};
   productIdToDelete: number | null = null;
@@ -110,6 +111,7 @@ export class ManageProductsComponent implements OnInit {
    */
   openEditProductModal(product: Product): void {
     this.currentProduct = { ...product, productTypeId: product.productType.id };
+    this.originalProduct = { ...product, productTypeId: product.productType.id }; // Guardar el producto original
     this.editProductModalVisible = true;
   }
 
@@ -128,6 +130,7 @@ export class ManageProductsComponent implements OnInit {
       productTypeId: '',
       image: null
     };
+    this.originalProduct = null;
   }
 
   /**
@@ -185,10 +188,20 @@ export class ManageProductsComponent implements OnInit {
    */
   updateProduct(): void {
     const formData = new FormData();
-    formData.append('name', this.currentProduct.name);
-    formData.append('price', this.currentProduct.price);
-    formData.append('stock', this.currentProduct.stock);
-    formData.append('productTypeId', this.currentProduct.productTypeId);
+    const originalProduct = this.originalProduct;
+
+    if (this.currentProduct.name !== originalProduct.name) {
+      formData.append('name', this.currentProduct.name);
+    }
+    if (this.currentProduct.price !== originalProduct.price) {
+      formData.append('price', this.currentProduct.price.toString());
+    }
+    if (this.currentProduct.stock !== originalProduct.stock) {
+      formData.append('stock', this.currentProduct.stock.toString());
+    }
+    if (this.currentProduct.productTypeId !== originalProduct.productTypeId) {
+      formData.append('productTypeId', this.currentProduct.productTypeId.toString());
+    }
     if (this.currentProduct.image instanceof File) {
       formData.append('image', this.currentProduct.image);
     }
@@ -196,7 +209,7 @@ export class ManageProductsComponent implements OnInit {
     this.productService.editProduct(this.currentProduct.id, formData).subscribe({
       next: response => {
         console.log(response);
-        alert('Product updated successfully');
+        alert('Producto actualizado con éxito');
         this.loadProducts();
         this.closeEditProductModal();
       },
@@ -209,9 +222,9 @@ export class ManageProductsComponent implements OnInit {
             this.errorMessage = err.error;
           }
         } else {
-          this.errorMessage = 'Unexpected error. Please try again.';
+          this.errorMessage = 'Error inesperado. Por favor, inténtelo de nuevo.';
         }
-        console.error('Error updating product', err);
+        console.error('Error al actualizar el producto', err);
       }
     });
   }
