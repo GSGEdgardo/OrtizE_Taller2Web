@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { AccountService } from 'src/app/services/account.service';
-import { Account } from 'src/app/models/account';
-import { Gender, Client } from 'src/app/models/client';
 import { ClientService } from 'src/app/services/client.service';
+import { Account } from 'src/app/models/account';
+import { Client, Gender } from 'src/app/models/client';
 
 @Component({
   selector: 'app-user-profile',
@@ -63,10 +63,13 @@ export class UserProfileComponent implements OnInit {
         ...this.currentClient,
         name: this.editProfileForm.value.name,
         birthday: this.editProfileForm.value.birthday,
-        gender: { id: this.editProfileForm.value.gender, type: '' }  // El `type` es opcional aquí ya que solo necesitas el `id`
+        gender: { id: this.editProfileForm.value.gender, type: '' }
       };
       this.clientService.updateClient(updatedClient).subscribe({
-        next: () => alert('Perfil actualizado con éxito'),
+        next: () => {
+          alert('Perfil actualizado con éxito');
+          this.getCurrentAccount();
+        },
         error: (err) => console.error(err)
       });
     }

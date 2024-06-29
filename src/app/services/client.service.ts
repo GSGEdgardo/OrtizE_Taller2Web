@@ -11,7 +11,7 @@ import { catchError } from 'rxjs/operators';
 export class ClientService {
   private baseUrl: string = environment.apiUrl + 'user';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getClients(): Observable<Client[]> {
     return this.http.get<Client[]>(this.baseUrl).pipe(
@@ -27,17 +27,19 @@ export class ClientService {
 
   updateClient(client: Client): Observable<void> {
     const clientDto = {
-      name: client.name,
-      birthday: client.birthday,
-      genderId: client.gender.id
+      editUserDto: {
+        name: client.name,
+        birthday: client.birthday,
+        genderId: client.gender.id
+      }
     };
     return this.http.put<void>(`${this.baseUrl}/${client.id}`, clientDto, {
+      headers: { 'Content-Type': 'application/json' },
       responseType: 'text' as 'json'
     }).pipe(
       catchError(this.handleError)
     );
   }
-
 
   searchClients(query: string): Observable<Client[]> {
     return this.http.get<Client[]>(`${this.baseUrl}/search`, { params: { query } }).pipe(
@@ -48,7 +50,7 @@ export class ClientService {
   changeClientState(id: number, newState: boolean): Observable<void> {
     return this.http.put<void>(`${this.baseUrl}/${id}/state`, `"${newState}"`, {
       headers: { 'Content-Type': 'application/json' },
-      responseType: 'text' as 'json' 
+      responseType: 'text' as 'json'
     }).pipe(
       catchError(this.handleError)
     );
