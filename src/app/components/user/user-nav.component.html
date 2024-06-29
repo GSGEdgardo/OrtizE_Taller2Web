@@ -1,20 +1,20 @@
 <nav class="bg-[#8b7d77] text-white flex items-center p-4">
-    <div class="flex-grow flex justify-center space-x-32">
-      <span>Bienvenido Cliente!</span>
-    </div>
-    <div class="relative">
-      <button (click)="toggleUserMenu()" class="text-white focus:outline-none">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-      </button>
-      <div *ngIf="isUserMenuOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20">
-        <a routerLink="edit-profile" class="block px-4 py-2 text-black hover:bg-gray-100">Editar perfil</a>
-        <a routerLink="change-password" class="block px-4 py-2 text-black hover:bg-gray-100">Cambiar contraseña</a>
-        <a (click)="logout()" class="block px-4 py-2 text-black hover:bg-gray-100 cursor-pointer">Cerrar sesión</a>
-      </div>
-    </div>
-  </nav>
-  <div *ngIf="isMenuOpen" class="md:hidden bg-[#8b7d77] text-white flex flex-col items-center space-y-2 p-4">
-    <a routerLink="view-products" routerLinkActive="font-bold" class="hover:underline">Comprar productos</a>
+  <div class="flex-grow flex justify-center space-x-32">
+    <span>Bienvenido {{ userName }}!</span>
   </div>
+  <div class="relative">
+    <button (click)="toggleUserMenu()" class="text-white focus:outline-none">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+    <div *ngIf="isUserMenuOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20">
+      <a routerLink="edit-profile" class="block px-4 py-2 text-black hover:bg-gray-100">Editar perfil</a>
+      <a routerLink="change-password" class="block px-4 py-2 text-black hover:bg-gray-100">Cambiar contraseña</a>
+      <a (click)="logout()" class="block px-4 py-2 text-black hover:bg-gray-100 cursor-pointer">Cerrar sesión</a>
+    </div>
+  </div>
+</nav>
+<div *ngIf="isMenuOpen" class="md:hidden bg-[#8b7d77] text-white flex flex-col items-center space-y-2 p-4">
+  <a routerLink="view-products" routerLinkActive="font-bold" class="hover:underline">Comprar productos</a>
+</div>
