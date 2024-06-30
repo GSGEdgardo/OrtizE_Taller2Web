@@ -24,10 +24,16 @@ export class RegisterComponent implements OnInit {
     private router: Router) {
   }
 
+  /**
+   * @description Initializes the component and sets up the registration form.
+   */
   ngOnInit(): void {
     this.initializeForm();
   }
 
+  /**
+   * @description Initializes the registration form with validation.
+   */
   initializeForm(): void {
     this.registerForm = this.fb.group({
       rut: ['', [
@@ -68,12 +74,21 @@ export class RegisterComponent implements OnInit {
     });
   }
 
+  /**
+   * @description Custom validator to match password and confirm password fields.
+   * @param matchTo string The control name to match to.
+   * @returns ValidatorFn A validator function.
+   */
   matchValues(matchTo: string): ValidatorFn {
     return (control: AbstractControl) => {
       return control.value === control.parent?.get(matchTo)?.value ? null : { noMatching: true };
     };
   }
 
+  /**
+   * @description Custom validator to ensure the date is in the past.
+   * @returns ValidatorFn A validator function.
+   */
   pastDateValidator(): ValidatorFn {
     return (control: AbstractControl) => {
       const today = new Date();
@@ -82,11 +97,20 @@ export class RegisterComponent implements OnInit {
     };
   }
 
+  /**
+   * @description Formats the date to MM/DD/YY format.
+   * @param date string The date to format.
+   * @returns string The formatted date.
+   */
   formatDate(date: string): string {
     const [year, month, day] = date.split('-');
     return `${month}/${day}/${year.substring(2, 4)}`;
   }
 
+  /**
+   * @description Sets backend validation errors on the form controls.
+   * @param errors any The errors from the backend.
+   */
   setBackendErrors(errors: any): void {
     for (const key in errors) {
       if (this.registerForm.controls[key]) {
@@ -95,6 +119,9 @@ export class RegisterComponent implements OnInit {
     }
   }
 
+  /**
+   * @description Registers a new user.
+   */
   register(): void {
     if (this.registerForm.invalid) {
       this.markAllAsTouched();
@@ -130,10 +157,16 @@ export class RegisterComponent implements OnInit {
     });
   }
 
+  /**
+   * @description Navigates to the login page.
+   */
   navigateToLogin(): void {
     this.router.navigateByUrl('/');
   }
 
+  /**
+   * @description Marks all form controls as touched to trigger validation.
+   */
   private markAllAsTouched(): void {
     Object.values(this.registerForm.controls).forEach(control => {
       control.markAsTouched();

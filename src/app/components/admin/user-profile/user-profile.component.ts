@@ -28,11 +28,17 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
+  /**
+   * @description Initializes the component, gets the current account and loads genders.
+   */
   ngOnInit(): void {
     this.getCurrentAccount();
     this.loadGenders();
   }
 
+  /**
+   * @description Gets the current account and client details.
+   */
   getCurrentAccount(): void {
     this.accountService.currentAccount$.subscribe(account => {
       this.currentAccount = account;
@@ -51,12 +57,18 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
+  /**
+   * @description Loads the gender options.
+   */
   loadGenders(): void {
     this.clientService.getGenders().subscribe(genders => {
       this.genders = genders;
     });
   }
 
+  /**
+   * @description Submits the updated profile information.
+   */
   onSubmit(): void {
     if (this.editProfileForm.valid && this.currentClient) {
       const updatedClient: Client = {

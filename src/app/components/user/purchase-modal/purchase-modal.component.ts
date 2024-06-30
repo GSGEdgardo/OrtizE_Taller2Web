@@ -8,8 +8,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class PurchaseModalComponent implements OnInit {
   @Input() product: any;
-  @Output() close = new EventEmitter();
-  @Output() submit = new EventEmitter();
+  @Output() close = new EventEmitter<void>();
+  @Output() submit = new EventEmitter<{ quantity: string }>();
   purchaseForm: FormGroup;
   total: number = 0;
   errorMessage: string = '';
@@ -20,22 +20,34 @@ export class PurchaseModalComponent implements OnInit {
     });
   }
 
+  /**
+   * @description Initializes the component, sets up the value change subscription for the quantity field.
+   */
   ngOnInit(): void {
     this.purchaseForm.get('quantity')?.valueChanges.subscribe(value => {
       this.calculateTotal();
     });
   }
 
+  /**
+   * @description Emits the close event to close the modal.
+   */
   onClose(): void {
     this.close.emit();
   }
 
+  /**
+   * @description Emits the submit event with the purchase form value if the form is valid.
+   */
   onSubmit(): void {
     if (this.purchaseForm.valid) {
       this.submit.emit(this.purchaseForm.value);
     }
   }
 
+  /**
+   * @description Calculates the total price based on the quantity and product price.
+   */
   calculateTotal(): void {
     const quantity = this.purchaseForm.get('quantity')?.value || 0;
     if (quantity < 0) {

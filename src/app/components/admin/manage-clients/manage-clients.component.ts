@@ -32,17 +32,23 @@ export class ManageClientsComponent implements OnInit {
     });
   }
 
+  /**
+   * @description Initializes the component, loads clients and gets the current account.
+   */
   ngOnInit(): void {
     this.loadClients();
     this.getCurrentAccount();
 
     this.searchForm.get('query')?.valueChanges.pipe(
-      debounceTime(300) // Añadir un tiempo de espera para evitar llamadas excesivas
+      debounceTime(300) // Adds a delay to avoid excessive calls
     ).subscribe(query => {
       this.searchClients(query);
     });
   }
 
+  /**
+   * @description Loads the clients from the server.
+   */
   loadClients(): void {
     this.clientService.getClients().subscribe({
       next: (data) => {
@@ -53,12 +59,19 @@ export class ManageClientsComponent implements OnInit {
     });
   }
 
+  /**
+   * @description Gets the current account details.
+   */
   getCurrentAccount(): void {
     this.accountService.currentAccount$.subscribe(account => {
       this.currentAccount = account;
     });
   }
 
+  /**
+   * @description Searches for clients based on the query.
+   * @param query string The search query.
+   */
   searchClients(query: string): void {
     query = query.toLowerCase();
     if (query) {
@@ -69,23 +82,29 @@ export class ManageClientsComponent implements OnInit {
         client.email.toLowerCase().includes(query) ||
         client.gender.type.toLowerCase().includes(query)
       );
-      if (this.filteredClients.length === 0) {
-        this.noResultsMessage = 'No se encuentra un cliente con ese nombre';
-      } else {
-        this.noResultsMessage = '';
-      }
+      this.noResultsMessage = this.filteredClients.length === 0 
+        ? 'No se encuentra un cliente con ese nombre'
+        : '';
     } else {
       this.filteredClients = this.clients;
       this.noResultsMessage = '';
     }
   }
 
+  /**
+   * @description Opens the confirmation modal to activate/deactivate a client.
+   * @param client Client The client to be activated/deactivated.
+   */
   openConfirmModal(client: Client): void {
     this.currentClient = client;
     this.actionText = client.isActive ? 'desactivar' : 'activar';
     this.showConfirmModal = true;
   }
 
+  /**
+   * @description Toggles the state (active/inactive) of the client.
+   * @param client Client | null The client whose state is to be toggled.
+   */
   toggleClientState(client: Client | null): void {
     if (!client) return;
 
