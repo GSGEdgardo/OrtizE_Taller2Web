@@ -33,6 +33,9 @@ export class ViewProductsComponent implements OnInit {
     });
   }
 
+  /**
+   * @description Initializes the component, loads the products, and sets up the search form value changes subscription.
+   */
   ngOnInit(): void {
     this.loadProducts();
 
@@ -43,6 +46,9 @@ export class ViewProductsComponent implements OnInit {
     });
   }
 
+  /**
+   * @description Loads available products from the server.
+   */
   loadProducts(): void {
     this.productService.getAvailableProducts(1, 10).subscribe({
       next: (data) => {
@@ -54,6 +60,10 @@ export class ViewProductsComponent implements OnInit {
     });
   }
 
+  /**
+   * @description Searches for products based on the provided query.
+   * @param query string The search query.
+   */
   searchProducts(query: string): void {
     if (query) {
       this.productService.searchAvailableProducts(query, 1, 10).subscribe({
@@ -69,16 +79,27 @@ export class ViewProductsComponent implements OnInit {
     }
   }
 
+  /**
+   * @description Opens the purchase modal for the selected product.
+   * @param product Product The product to be purchased.
+   */
   openPurchaseModal(product: Product): void {
     this.selectedProduct = product;
     this.showModal = true;
   }
 
+  /**
+   * @description Closes the purchase modal.
+   */
   closePurchaseModal(): void {
     this.showModal = false;
     this.selectedProduct = null;
   }
 
+  /**
+   * @description Submits a purchase request for the selected product.
+   * @param data any The purchase data.
+   */
   submitPurchase(data: any): void {
     const userId = this.accountService.currentAccountValue?.id.toString() || '';
     const purchase = { quantity: data.quantity.toString(), userId, productId: this.selectedProduct.id.toString() };
@@ -92,6 +113,9 @@ export class ViewProductsComponent implements OnInit {
     });
   }
 
+  /**
+   * @description Loads the next page of products.
+   */
   nextPage(): void {
     if (this.products.length === this.pageSize) {
       this.currentPage++;
@@ -99,6 +123,9 @@ export class ViewProductsComponent implements OnInit {
     }
   }
 
+  /**
+   * @description Loads the previous page of products.
+   */
   prevPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;

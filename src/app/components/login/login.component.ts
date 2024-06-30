@@ -19,10 +19,16 @@ export class LoginComponent implements OnInit {
     private router: Router) {
   }
 
+  /**
+   * @description Initializes the component and sets up the login form.
+   */
   ngOnInit(): void {
     this.initializeForm();
   }
 
+  /**
+   * @description Initializes the login form with validation.
+   */
   initializeForm(): void {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -30,6 +36,9 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  /**
+   * @description Logs in the user if the form is valid, navigates to the appropriate route based on the user's role.
+   */
   login(): void {
     this.errorMessage = '';
     if (this.loginForm.valid) {
