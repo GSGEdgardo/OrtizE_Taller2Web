@@ -25,21 +25,35 @@ export class ChangePasswordComponent implements OnInit {
     }, { validator: this.passwordMatchValidator });
   }
 
+  /**
+   * @description Initializes the component and gets the current account.
+   */
   ngOnInit(): void {
     this.getCurrentAccount();
   }
 
+  /**
+   * @description Gets the current account details.
+   */
   getCurrentAccount(): void {
     this.accountService.currentAccount$.subscribe(account => {
       this.currentAccount = account;
     });
   }
 
+  /**
+   * @description Custom validator to check if the new password and confirm password match.
+   * @param form FormGroup The form group to validate.
+   * @returns null | { mismatch: true } Returns null if the passwords match, otherwise returns an error object.
+   */
   passwordMatchValidator(form: FormGroup) {
     return form.get('NewPassword')!.value === form.get('ConfirmNewPassword')!.value
       ? null : { mismatch: true };
   }
 
+  /**
+   * @description Submits the form to change the password.
+   */
   onSubmit(): void {
     if (this.changePasswordForm.valid && this.currentAccount) {
       const passwordData = {

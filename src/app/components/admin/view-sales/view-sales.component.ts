@@ -31,6 +31,9 @@ export class ViewSalesComponent implements OnInit {
     });
   }
 
+  /**
+   * @description Initializes the component, loads sales, and sets up search form value change subscriptions.
+   */
   ngOnInit(): void {
     this.loadSales();
 
@@ -51,6 +54,9 @@ export class ViewSalesComponent implements OnInit {
     });
   }
 
+  /**
+   * @description Loads sales data from the server.
+   */
   loadSales(): void {
     this.purchaseService.getPurchases().subscribe({
       next: (data) => {
@@ -63,10 +69,16 @@ export class ViewSalesComponent implements OnInit {
     });
   }
 
+  /**
+   * @description Extracts unique product categories from sales data.
+   */
   extractCategories(): void {
     this.categories = [...new Set(this.sales.map(sale => sale.productType))];
   }
 
+  /**
+   * @description Applies search and filter criteria to the sales data.
+   */
   applyFilters(): void {
     let query = this.searchForm.get('query')?.value.toLowerCase() || '';
     let category = this.searchForm.get('category')?.value;
